@@ -1,0 +1,2777 @@
+{
+  "$version": 8,
+  "$root": {
+    "version": {
+      "required": true,
+      "type": "enum",
+      "values": [8],
+      "doc": "Style specification version number. Must be 8.",
+      "example": 8
+    },
+    "name": {
+      "type": "string",
+      "doc": "A human-readable name for the style.",
+      "example": "Bright"
+    },
+    "metadata": {
+      "type": "*",
+      "doc": "Arbitrary properties useful to track with the stylesheet, but do not influence rendering. Properties should be prefixed to avoid collisions, like 'mapbox:'."
+    },
+    "center": {
+      "type": "array",
+      "value": "number",
+      "doc": "Default map center in longitude and latitude.  The style center will be used only if the map has not been positioned by other means (e.g. map options or user interaction).",
+      "example": [-73.9749, 40.7736]
+    },
+    "zoom": {
+      "type": "number",
+      "doc": "Default zoom level.  The style zoom will be used only if the map has not been positioned by other means (e.g. map options or user interaction).",
+      "example": 12.5
+    },
+    "bearing": {
+      "type": "number",
+      "default": 0,
+      "period": 360,
+      "units": "degrees",
+      "doc": "Default bearing, in degrees clockwise from true north.  The style bearing will be used only if the map has not been positioned by other means (e.g. map options or user interaction).",
+      "example": 29
+    },
+    "pitch": {
+      "type": "number",
+      "default": 0,
+      "units": "degrees",
+      "doc": "Default pitch, in degrees. Zero is perpendicular to the surface, for a look straight down at the map, while a greater value like 60 looks ahead towards the horizon. The style pitch will be used only if the map has not been positioned by other means (e.g. map options or user interaction).",
+      "example": 50
+    },
+    "light": {
+      "type": "light",
+      "doc": "The global light source.",
+      "example": {
+        "anchor": "viewport",
+        "color": "white",
+        "intensity": 0.4
+      }
+    },
+    "sources": {
+      "required": true,
+      "type": "sources",
+      "doc": "数据源格式.",
+      "example": {
+        "mapbox-streets": {
+          "type": "vector",
+          "url": "mapbox://mapbox.mapbox-streets-v6"
+        }
+      }
+    },
+    "sprite": {
+      "type": "string",
+      "doc": "用于检索雪碧图像和元数据的基本URL. 扩展名`.png`，`.json`和比例因子`@ 2x.png`将被自动附加. This property is required if any layer uses the `background-pattern`, `fill-pattern`, `line-pattern`, `fill-extrusion-pattern`, or `icon-image` properties.",
+      "example": "mapbox://sprites/mapbox/bright-v8"
+    },
+    "glyphs": {
+      "type": "string",
+      "doc": "A URL template for loading signed-distance-field glyph sets in PBF format. The URL must include `{fontstack}` and `{range}` tokens. This property is required if any layer uses the `text-field` layout property.",
+      "example": "mapbox://fonts/mapbox/{fontstack}/{range}.pbf"
+    },
+    "transition": {
+      "type": "transition",
+      "doc": "全局转换定义,用作属性间的默认值.",
+      "example": {
+        "duration": 300,
+        "delay": 0
+      }
+    },
+    "layers": {
+      "required": true,
+      "type": "array",
+      "value": "layer",
+      "doc": "图层将按照这个数组的顺序绘制.",
+      "example": [
+        {
+          "id": "water",
+          "source": "mapbox-streets",
+          "source-layer": "water",
+          "type": "fill",
+          "paint": {
+            "fill-color": "#00ffff"
+          }
+        }
+      ]
+    }
+  },
+  "sources": {
+    "*": {
+      "type": "source",
+      "doc": "Specification of a data source. For vector and raster sources, either TileJSON or a URL to a TileJSON must be provided. For image and video sources, a URL must be provided. For GeoJSON sources, a URL or inline GeoJSON must be provided."
+    }
+  },
+  "source": [
+    "source_tile",
+    "source_geojson",
+    "source_video",
+    "source_image"
+  ],
+  "source_tile": {
+    "type": {
+      "required": true,
+      "type": "enum",
+      "values": {
+        "vector": {
+            "doc": "A vector tile source."
+        },
+        "raster": {
+            "doc": "A raster tile source."
+        }
+      },
+      "doc": "The data type of the tile source."
+    },
+    "url": {
+      "type": "string",
+      "doc": "TileJSON资源的URL。 支持的协议是“http：”,“https：”和“mapbox：// <mapid>”."
+    },
+    "tiles": {
+      "type": "array",
+      "value": "string",
+      "doc": "如TileJSON规范中所述,一个或多个图块源URL的数组."
+    },
+    "minzoom": {
+      "type": "number",
+      "default": 0,
+      "doc": "TileJSON规范中可以使用最小缩放级别."
+    },
+    "maxzoom": {
+      "type": "number",
+      "default": 22,
+      "doc": "TileJSON规范中可以使用最大缩放级别.当以较高缩放级别显示地图时,将使用maxzoom上的图块的数据."
+    },
+    "tileSize": {
+      "type": "number",
+      "default": 512,
+      "units": "pixels",
+      "doc": "显示此图层的图块的最小视觉尺寸.仅可配置为栅格图层."
+    },
+    "*": {
+      "type": "*",
+      "doc": "配置数据源的其他键."
+    }
+  },
+  "source_geojson": {
+    "type": {
+      "required": true,
+      "type": "enum",
+      "values": {
+        "geojson": {
+            "doc": "A GeoJSON data source."
+        }
+      },
+      "doc": "The data type of the GeoJSON source."
+    },
+    "data": {
+      "type": "*",
+      "doc": "A URL to a GeoJSON file, or inline GeoJSON."
+    },
+    "maxzoom": {
+      "type": "number",
+      "default": 18,
+      "doc": "Maximum zoom level at which to create vector tiles (higher means greater detail at high zoom levels)."
+    },
+    "buffer": {
+      "type": "number",
+      "default": 128,
+      "maximum": 512,
+      "minimum": 0,
+      "doc": "Size of the tile buffer on each side. A value of 0 produces no buffer. A value of 512 produces a buffer as wide as the tile itself. Larger values produce fewer rendering artifacts near tile edges and slower performance."
+    },
+    "tolerance": {
+      "type": "number",
+      "default": 0.375,
+      "doc": "Douglas-Peucker simplification tolerance (higher means simpler geometries and faster performance)."
+    },
+    "cluster": {
+      "type": "boolean",
+      "default": false,
+      "doc": "If the data is a collection of point features, setting this to true clusters the points by radius into groups."
+    },
+    "clusterRadius": {
+      "type": "number",
+      "default": 50,
+      "minimum": 0,
+      "doc": "Radius of each cluster if clustering is enabled. A value of 512 indicates a radius equal to the width of a tile."
+    },
+    "clusterMaxZoom": {
+      "type": "number",
+      "doc": "Max zoom on which to cluster points if clustering is enabled. Defaults to one zoom less than maxzoom (so that last zoom features are not clustered)."
+    }
+  },
+  "source_video": {
+    "type": {
+      "required": true,
+      "type": "enum",
+      "values": {
+        "video": {
+            "doc": "A video data source."
+        }
+      },
+      "doc": "The data type of the video source."
+    },
+    "urls": {
+      "required": true,
+      "type": "array",
+      "value": "string",
+      "doc": "URLs to video content in order of preferred format."
+    },
+    "coordinates": {
+      "required": true,
+      "doc": "Corners of video specified in longitude, latitude pairs.",
+      "type": "array",
+      "length": 4,
+      "value": {
+        "type": "array",
+        "length": 2,
+        "value": "number",
+        "doc": "A single longitude, latitude pair."
+      }
+    }
+  },
+  "source_image": {
+    "type": {
+      "required": true,
+      "type": "enum",
+      "values": {
+        "image": {
+            "doc": "An image data source."
+        }
+      },
+      "doc": "The data type of the image source."
+    },
+    "url": {
+      "required": true,
+      "type": "string",
+      "doc": "URL that points to an image."
+    },
+    "coordinates": {
+      "required": true,
+      "doc": "Corners of image specified in longitude, latitude pairs.",
+      "type": "array",
+      "length": 4,
+      "value": {
+        "type": "array",
+        "length": 2,
+        "value": "number",
+        "doc": "A single longitude, latitude pair."
+      }
+    }
+  },
+  "layer": {
+    "id": {
+      "type": "string",
+      "doc": "图层唯一名称.",
+      "required": true
+    },
+    "type": {
+      "type": "enum",
+      "values": {
+        "fill": {
+          "doc": "A filled polygon with an optional stroked border.",
+          "sdk-support": {
+            "basic functionality": {
+              "js": "0.10.0",
+              "ios": "2.0.0",
+              "android": "2.0.1"
+            }
+          }
+        },
+        "line": {
+          "doc": "A stroked line.",
+          "sdk-support": {
+            "basic functionality": {
+              "js": "0.10.0",
+              "ios": "2.0.0",
+              "android": "2.0.1"
+            }
+          }
+        },
+        "symbol": {
+          "doc": "An icon or a text label.",
+          "sdk-support": {
+            "basic functionality": {
+              "js": "0.10.0",
+              "ios": "2.0.0",
+              "android": "2.0.1"
+            }
+          }
+        },
+        "circle": {
+          "doc": "A filled circle.",
+          "sdk-support": {
+            "basic functionality": {
+              "js": "0.10.0",
+              "ios": "2.0.0",
+              "android": "2.0.1"
+            }
+          }
+        },
+        "fill-extrusion": {
+          "doc": "An extruded (3D) polygon.",
+          "sdk-support": {
+            "basic functionality": {
+              "js": "0.27.0"
+            }
+          }
+        },
+        "raster": {
+          "doc": "Raster map textures such as satellite imagery.",
+          "sdk-support": {
+            "basic functionality": {
+              "js": "0.10.0",
+              "ios": "2.0.0",
+              "android": "2.0.1"
+            }
+          }
+        },
+        "background": {
+          "doc": "The background color or pattern of the map.",
+          "sdk-support": {
+            "basic functionality": {
+              "js": "0.10.0",
+              "ios": "2.0.0",
+              "android": "2.0.1"
+            }
+          }
+        }
+      },
+      "doc": "这个图层的呈现形式."
+    },
+    "metadata": {
+      "type": "*",
+      "doc": "Arbitrary properties useful to track with the layer, but do not influence rendering. Properties should be prefixed to avoid collisions, like 'mapbox:'."
+    },
+    "ref": {
+      "type": "string",
+      "doc": "引用另一个层来复制`type`,`source`,`source-layer`,`minzoom`,`maxzoom`,`filter`和`layout`属性.允许层共享处理提高效率."
+    },
+    "source": {
+      "type": "string",
+      "doc": "用于描述这个图层资源名称."
+    },
+    "source-layer": {
+      "type": "string",
+      "doc": "图层使用的矢量图块资源.如果支持多层,则必须添加."
+    },
+    "minzoom": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 24,
+      "doc": "图层呈现的最小缩放级别."
+    },
+    "maxzoom": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 24,
+      "doc": "图层呈现的最大缩放级别."
+    },
+    "filter": {
+      "type": "filter",
+      "doc": "自定义条件,只显示符合条件的配置."
+    },
+    "layout": {
+      "type": "layout",
+      "doc": "图层的布局属性."
+    },
+    "paint": {
+      "type": "paint",
+      "doc": "该图层的默认绘画属性."
+    },
+    "paint.*": {
+      "type": "paint",
+      "doc": "[Deprecated] Class-specific paint properties for this layer. The class name is the part after the first dot. Note: class-specific paint properties are deprecated and will be removed in the next version of this spec."
+    }
+  },
+  "layout": [
+    "layout_fill",
+    "layout_line",
+    "layout_circle",
+    "layout_fill-extrusion",
+    "layout_symbol",
+    "layout_raster",
+    "layout_background"
+  ],
+  "layout_background": {
+    "visibility": {
+      "type": "enum",
+      "values": {
+        "visible": {
+            "doc": "The layer is shown."
+        },
+        "none": {
+            "doc": "The layer is not shown."
+        }
+      },
+      "default": "visible",
+      "doc": "Whether this layer is displayed.",
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    }
+  },
+  "layout_fill": {
+    "visibility": {
+      "type": "enum",
+      "values": {
+        "visible": {
+            "doc": "The layer is shown."
+        },
+        "none": {
+            "doc": "The layer is not shown."
+        }
+      },
+      "default": "visible",
+      "doc": "Whether this layer is displayed.",
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    }
+  },
+  "layout_circle": {
+    "visibility": {
+      "type": "enum",
+      "values": {
+        "visible": {
+            "doc": "The layer is shown."
+        },
+        "none": {
+            "doc": "The layer is not shown."
+        }
+      },
+      "default": "visible",
+      "doc": "Whether this layer is displayed.",
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    }
+  },
+  "layout_fill-extrusion": {
+    "visibility": {
+      "type": "enum",
+      "values": {
+        "visible": {
+            "doc": "The layer is shown."
+        },
+        "none": {
+            "doc": "The layer is not shown."
+        }
+      },
+      "default": "visible",
+      "doc": "Whether this layer is displayed.",
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.27.0"
+        }
+      }
+    }
+  },
+  "layout_line": {
+    "line-cap": {
+      "type": "enum",
+      "function": "piecewise-constant",
+      "zoom-function": true,
+      "values": {
+        "butt": {
+            "doc": "向线条的每个末端添加平直的边缘。."
+        },
+        "round": {
+            "doc": "圆角.向线条的每个末端添加圆形线帽,半径为线宽的一半."
+        },
+        "square": {
+            "doc": "向线条的每个末端添加正方形线帽,以线宽度的一半拉伸作为线端点."
+        }
+      },
+      "default": "butt",
+      "doc": "显示线尾.",
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "line-join": {
+      "type": "enum",
+      "function": "piecewise-constant",
+      "zoom-function": true,
+      "values": {
+        "bevel": {
+            "doc": "平直端点连接,该线在距离为端点超出线宽一半的距离"
+        },
+        "round": {
+            "doc": "圆形端连接,它以线的端点延伸超过端点,半径为线宽的一半,线的端点为中心"
+        },
+        "miter": {
+            "doc": "具有角度的连接,其外侧超出线的端点,直到相交."
+        }
+      },
+      "default": "miter",
+      "doc": "线的交点.",
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "line-miter-limit": {
+      "type": "number",
+      "default": 2,
+      "function": "interpolated",
+      "zoom-function": true,
+      "doc": "用于自动转换斜角连接形成新的角度.",
+      "requires": [
+        {
+          "line-join": "miter"
+        }
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "line-round-limit": {
+      "type": "number",
+      "default": 1.05,
+      "function": "interpolated",
+      "zoom-function": true,
+      "doc": "用于自动将圆形连接转换为斜角连接.",
+      "requires": [
+        {
+          "line-join": "round"
+        }
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "visibility": {
+      "type": "enum",
+      "values": {
+        "visible": {
+            "doc": "The layer is shown."
+        },
+        "none": {
+            "doc": "The layer is not shown."
+        }
+      },
+      "default": "visible",
+      "doc": "Whether this layer is displayed.",
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    }
+  },
+  "layout_symbol": {
+    "symbol-placement": {
+      "type": "enum",
+      "function": "piecewise-constant",
+      "zoom-function": true,
+      "values": {
+          "point": {
+              "doc": "标签放置在几何体所在的位置."
+          },
+          "line": {
+              "doc": "标签沿几何图形的线放置.只能在“LineString”和“Polygon”上使用."
+          }
+      },
+      "default": "point",
+      "doc": "相对于几何结构的标签放置位置.",
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "symbol-spacing": {
+      "type": "number",
+      "default": 250,
+      "minimum": 1,
+      "function": "interpolated",
+      "zoom-function": true,
+      "units": "pixels",
+      "doc": "两个符号标记之间的距离.",
+      "requires": [
+        {
+          "symbol-placement": "line"
+        }
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "symbol-avoid-edges": {
+      "type": "boolean",
+      "function": "piecewise-constant",
+      "zoom-function": true,
+      "default": false,
+      "doc": "如果为true,则标记不会不会跨越边缘以避免相互覆盖.建议在层中没有足够的填充在矢量图块中来防止碰撞,或者如果它是一个点符号层放置在线符号层之后.",
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "icon-allow-overlap": {
+      "type": "boolean",
+      "function": "piecewise-constant",
+      "zoom-function": true,
+      "default": false,
+      "doc": "如果为true，即使它与先前绘制的其他符号发生冲突,它也将是可见的.",
+      "requires": [
+        "icon-image"
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "icon-ignore-placement": {
+      "type": "boolean",
+      "function": "piecewise-constant",
+      "zoom-function": true,
+      "default": false,
+      "doc": "如果为true,其他符号即使与图标相碰撞也可以是可见的.",
+      "requires": [
+        "icon-image"
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "icon-optional": {
+      "type": "boolean",
+      "function": "piecewise-constant",
+      "zoom-function": true,
+      "default": false,
+      "doc": "如果为true,当图标与其他符号冲突但是文本没有,那么文本将被显示.",
+      "requires": [
+        "icon-image",
+        "text-field"
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "icon-rotation-alignment": {
+      "type": "enum",
+      "function": "piecewise-constant",
+      "zoom-function": true,
+      "values": {
+        "map": {
+            "doc": "When `symbol-placement` is set to `point`, aligns icons east-west. When `symbol-placement` is set to `line`, aligns icon x-axes with the line."
+        },
+        "viewport": {
+            "doc": "Produces icons whose x-axes are aligned with the x-axis of the viewport, regardless of the value of `symbol-placement`."
+        },
+        "auto": {
+            "doc": "When `symbol-placement` is set to `point`, this is equivalent to `viewport`. When `symbol-placement` is set to `line`, this is equivalent to `map`."
+        }
+      },
+      "default": "auto",
+      "doc": "与“symboll-placement”结合,确定了图标的旋转行为.",
+      "requires": [
+        "icon-image"
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        },
+        "`auto` value": {
+          "js": "0.25.0",
+          "android": "4.2.0"
+        }
+      }
+    },
+    "icon-size": {
+      "type": "number",
+      "default": 1,
+      "minimum": 0,
+      "function": "interpolated",
+      "zoom-function": true,
+      "doc": "图标比例尺.1是原始尺寸,3倍大小。",
+      "requires": [
+        "icon-image"
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "icon-text-fit": {
+      "type": "enum",
+      "function": "piecewise-constant",
+      "zoom-function": true,
+      "values": {
+        "none": {
+            "doc": "The icon is displayed at its intrinsic aspect ratio."
+        },
+        "width": {
+            "doc": "The icon is scaled in the x-dimension to fit the width of the text."
+        },
+        "height": {
+            "doc": "The icon is scaled in the y-dimension to fit the height of the text."
+        },
+        "both": {
+            "doc": "The icon is scaled in both x- and y-dimensions."
+        }
+      },
+      "default": "none",
+      "doc": "缩放图标以适应相关文本.",
+      "requires": [
+        "icon-image",
+        "text-field"
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.21.0",
+          "android": "4.2.0"
+        }
+      }
+    },
+    "icon-text-fit-padding": {
+      "type": "array",
+      "value": "number",
+      "length": 4,
+      "default": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "units": "pixels",
+      "function": "interpolated",
+      "zoom-function": true,
+      "doc": "附加区域的大小按“icon-text-fit”所决定的尺寸添加,按顺时针顺序排列:上、右、下、左.",
+      "requires": [
+        "icon-image",
+        "text-field",
+        {
+          "icon-text-fit": [
+            "both",
+            "width",
+            "height"
+          ]
+        }
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.21.0",
+          "android": "4.2.0"
+        }
+      }
+    },
+    "icon-image": {
+      "type": "string",
+      "function": "piecewise-constant",
+      "zoom-function": true,
+      "doc": "替换了一个带有{tokens}的字符串，引用要获取的data属性.",
+      "tokens": true,
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "icon-rotate": {
+      "type": "number",
+      "default": 0,
+      "period": 360,
+      "function": "interpolated",
+      "zoom-function": true,
+      "property-function": true,
+      "units": "degrees",
+      "doc": "顺时针旋转图标.",
+      "requires": [
+        "icon-image"
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        },
+        "data-driven styling": {
+          "js": "0.21.0"
+        }
+      }
+    },
+    "icon-padding": {
+      "type": "number",
+      "default": 2,
+      "minimum": 0,
+      "function": "interpolated",
+      "zoom-function": true,
+      "units": "pixels",
+      "doc": "用于符号接触的图标边界框周围的附加区域的大小.",
+      "requires": [
+        "icon-image"
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "icon-keep-upright": {
+      "type": "boolean",
+      "function": "piecewise-constant",
+      "zoom-function": true,
+      "default": false,
+      "doc": "如果为true,图标可能会被翻转,以防止它被颠倒.",
+      "requires": [
+        "icon-image",
+        {
+          "icon-rotation-alignment": "map"
+        },
+        {
+          "symbol-placement": "line"
+        }
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "icon-offset": {
+      "type": "array",
+      "value": "number",
+      "length": 2,
+      "default": [
+        0,
+        0
+      ],
+      "function": "interpolated",
+      "zoom-function": true,
+      "property-function": true,
+      "doc": "图标从其锚点偏移距离.正值表示右下，而负值表示左上.当与“icon-rotate”组合时,偏移将像旋转的方向一样.",
+      "requires": [
+        "icon-image"
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        },
+        "data-driven styling": {
+          "js": "0.29.0"
+        }
+      }
+    },
+    "text-pitch-alignment": {
+      "type": "enum",
+      "function": "piecewise-constant",
+      "zoom-function": true,
+      "values": {
+        "map": {
+            "doc": "The text is aligned to the plane of the map."
+        },
+        "viewport": {
+            "doc": "The text is aligned to the plane of the viewport."
+        },
+        "auto": {
+            "doc": "Automatically matches the value of `text-rotation-alignment`."
+        }
+      },
+      "default": "auto",
+      "doc": "绘制地图时的文本方向.",
+      "requires": [
+        "text-field"
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.21.0",
+          "android": "4.2.0"
+        },
+        "`auto` value": {
+          "js": "0.25.0",
+          "android": "4.2.0"
+        }
+      }
+    },
+    "text-rotation-alignment": {
+      "type": "enum",
+      "function": "piecewise-constant",
+      "zoom-function": true,
+      "values": {
+        "map": {
+            "doc": "当“symboll - placement”被设置为“point”时,将文本与东西连接起来.当“symboll - placement”设置为“line”时,将文本x轴与该行对齐."
+        },
+        "viewport": {
+            "doc": "生成x轴与视图的x轴对齐的字形,而不考虑符号放置的值."
+        },
+        "auto": {
+            "doc": "当“symboll-placement”被设置为“point”时,这相当于“viewport”。当“symboll-placement”被设置为“line”时,这相当于“map”."
+        }
+      },
+      "default": "auto",
+      "doc": "结合“symboll-placement”,决定了形成文本的单个字形的旋转行为.",
+      "requires": [
+        "text-field"
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        },
+        "`auto` value": {
+          "js": "0.25.0",
+          "android": "4.2.0"
+        }
+      }
+    },
+    "text-field": {
+      "type": "string",
+      "function": "piecewise-constant",
+      "zoom-function": true,
+      "default": "",
+      "tokens": true,
+      "doc": "用于文本标签的值.特性属性使用诸如{ field_name }之类的命令来指定.",
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "text-font": {
+      "type": "array",
+      "value": "string",
+      "function": "piecewise-constant",
+      "zoom-function": true,
+      "default": ["Open Sans Regular", "Arial Unicode MS Regular"],
+      "doc": "用于显示文本的字体.",
+      "requires": [
+        "text-field"
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "text-size": {
+      "type": "number",
+      "default": 16,
+      "minimum": 0,
+      "units": "pixels",
+      "function": "interpolated",
+      "zoom-function": true,
+      "doc": "字体大小.",
+      "requires": [
+        "text-field"
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "text-max-width": {
+      "type": "number",
+      "default": 10,
+      "minimum": 0,
+      "units": "ems",
+      "function": "interpolated",
+      "zoom-function": true,
+      "doc": "文本换行的最大行宽.",
+      "requires": [
+        "text-field"
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "text-line-height": {
+      "type": "number",
+      "default": 1.2,
+      "units": "ems",
+      "function": "interpolated",
+      "zoom-function": true,
+      "doc": "多行文本的文本行距.",
+      "requires": [
+        "text-field"
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "text-letter-spacing": {
+      "type": "number",
+      "default": 0,
+      "units": "ems",
+      "function": "interpolated",
+      "zoom-function": true,
+      "doc": "字符间的距离.",
+      "requires": [
+        "text-field"
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "text-justify": {
+      "type": "enum",
+      "function": "piecewise-constant",
+      "zoom-function": true,
+      "values": {
+        "left": {
+            "doc": "The text is aligned to the left."
+        },
+        "center": {
+            "doc": "The text is centered."
+        },
+        "right": {
+            "doc": "The text is aligned to the right."
+        }
+      },
+      "default": "center",
+      "doc": "文本对齐选项.",
+      "requires": [
+        "text-field"
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "text-anchor": {
+      "type": "enum",
+      "function": "piecewise-constant",
+      "zoom-function": true,
+      "values": {
+        "center": {
+            "doc": "The center of the text is placed closest to the anchor."
+        },
+        "left": {
+            "doc": "The left side of the text is placed closest to the anchor."
+        },
+        "right": {
+            "doc": "The right side of the text is placed closest to the anchor."
+        },
+        "top": {
+            "doc": "The top of the text is placed closest to the anchor."
+        },
+        "bottom": {
+            "doc": "The bottom of the text is placed closest to the anchor."
+        },
+        "top-left": {
+            "doc": "The top left corner of the text is placed closest to the anchor."
+        },
+        "top-right": {
+            "doc": "The top right corner of the text is placed closest to the anchor."
+        },
+        "bottom-left": {
+            "doc": "The bottom left corner of the text is placed closest to the anchor."
+        },
+        "bottom-right": {
+            "doc": "The bottom right corner of the text is placed closest to the anchor."
+        }
+      },
+      "default": "center",
+      "doc": "最靠近锚点的部分文字.",
+      "requires": [
+        "text-field"
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "text-max-angle": {
+      "type": "number",
+      "default": 45,
+      "units": "degrees",
+      "function": "interpolated",
+      "zoom-function": true,
+      "doc": "相邻字符之间的最大角度变化.",
+      "requires": [
+        "text-field",
+        {
+          "symbol-placement": "line"
+        }
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "text-rotate": {
+      "type": "number",
+      "default": 0,
+      "period": 360,
+      "units": "degrees",
+      "function": "interpolated",
+      "zoom-function": true,
+      "doc": "顺时针旋转文字.",
+      "requires": [
+        "text-field"
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "text-padding": {
+      "type": "number",
+      "default": 2,
+      "minimum": 0,
+      "units": "pixels",
+      "function": "interpolated",
+      "zoom-function": true,
+      "doc": "用于表示文本边界与文本内容之间的内边距区域大小",
+      "requires": [
+        "text-field"
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "text-keep-upright": {
+      "type": "boolean",
+      "function": "piecewise-constant",
+      "zoom-function": true,
+      "default": true,
+      "doc": "如果为true,文本可以垂直翻转,以防止它被颠倒.",
+      "requires": [
+        "text-field",
+        {
+          "text-rotation-alignment": "map"
+        },
+        {
+          "symbol-placement": "line"
+        }
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "text-transform": {
+      "type": "enum",
+      "function": "piecewise-constant",
+      "zoom-function": true,
+      "values": {
+        "none": {
+            "doc": "The text is not altered."
+        },
+        "uppercase": {
+            "doc": "Forces all letters to be displayed in uppercase."
+        },
+        "lowercase": {
+            "doc": "Forces all letters to be displayed in lowercase."
+        }
+      },
+      "default": "none",
+      "doc": "指定文本大小写,类似于CSS`text-transform`属性.",
+      "requires": [
+        "text-field"
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "text-offset": {
+      "type": "array",
+      "doc": "从锚点偏移文本的距离.正值表示右下，负值表示左上",
+      "value": "number",
+      "units": "ems",
+      "function": "interpolated",
+      "zoom-function": true,
+      "length": 2,
+      "default": [
+        0,
+        0
+      ],
+      "requires": [
+        "text-field"
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "text-allow-overlap": {
+      "type": "boolean",
+      "function": "piecewise-constant",
+      "zoom-function": true,
+      "default": false,
+      "doc": "如果为true，即使与其他先前绘制的标记相冲突，文本也将可见.",
+      "requires": [
+        "text-field"
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "text-ignore-placement": {
+      "type": "boolean",
+      "function": "piecewise-constant",
+      "zoom-function": true,
+      "default": false,
+      "doc": "如果为true,其他符号即使与文本相冲突,也可以是可见的.",
+      "requires": [
+        "text-field"
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "text-optional": {
+      "type": "boolean",
+      "function": "piecewise-constant",
+      "zoom-function": true,
+      "default": false,
+      "doc": "如果为true,当文本与其他图标不冲突时显示相应的文本.",
+      "requires": [
+        "text-field",
+        "icon-image"
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "visibility": {
+      "type": "enum",
+      "values": {
+        "visible": {
+            "doc": "The layer is shown."
+        },
+        "none": {
+            "doc": "The layer is not shown."
+        }
+      },
+      "default": "visible",
+      "doc": "Whether this layer is displayed.",
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    }
+  },
+  "layout_raster": {
+    "visibility": {
+      "type": "enum",
+      "values": {
+        "visible": {
+            "doc": "The layer is shown."
+        },
+        "none": {
+            "doc": "The layer is not shown."
+        }
+      },
+      "default": "visible",
+      "doc": "Whether this layer is displayed.",
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    }
+  },
+  "filter": {
+    "type": "array",
+    "value": "*",
+    "doc": "A filter selects specific features from a layer."
+  },
+  "filter_operator": {
+    "type": "enum",
+    "values": {
+      "==": {
+          "doc": "`[\"==\", key, value]` equality: `feature[key] = value`"
+      },
+      "!=": {
+          "doc": "`[\"!=\", key, value]` inequality: `feature[key] ≠ value`"
+      },
+      ">": {
+          "doc": "`[\">\", key, value]` greater than: `feature[key] > value`"
+      },
+      ">=": {
+          "doc": "`[\">=\", key, value]` greater than or equal: `feature[key] ≥ value`"
+      },
+      "<": {
+          "doc": "`[\"<\", key, value]` less than: `feature[key] < value`"
+      },
+      "<=": {
+          "doc": "`[\"<=\", key, value]` less than or equal: `feature[key] ≤ value`"
+      },
+      "in": {
+          "doc": "`[\"in\", key, v0, ..., vn]` set inclusion: `feature[key] ∈ {v0, ..., vn}`"
+      },
+      "!in": {
+          "doc": "`[\"!in\", key, v0, ..., vn]` set exclusion: `feature[key] ∉ {v0, ..., vn}`"
+      },
+      "all": {
+          "doc": "`[\"all\", f0, ..., fn]` logical `AND`: `f0 ∧ ... ∧ fn`"
+      },
+      "any": {
+          "doc": "`[\"any\", f0, ..., fn]` logical `OR`: `f0 ∨ ... ∨ fn`"
+      },
+      "none": {
+          "doc": "`[\"none\", f0, ..., fn]` logical `NOR`: `¬f0 ∧ ... ∧ ¬fn`"
+      },
+      "has": {
+          "doc": "`[\"has\", key]` `feature[key]` exists"
+      },
+      "!has": {
+          "doc": "`[\"!has\", key]` `feature[key]` does not exist"
+      }
+    },
+    "doc": "The filter operator."
+  },
+  "geometry_type": {
+    "type": "enum",
+    "values": {
+      "Point": {
+          "doc": "Filter to point geometries."
+      },
+      "LineString": {
+          "doc": "Filter to line geometries."
+      },
+      "Polygon": {
+          "doc": "Filter to polygon geometries."
+      }
+    },
+    "doc": "The geometry type for the filter to select."
+  },
+  "function": {
+    "stops": {
+      "type": "array",
+      "doc": "An array of stops.",
+      "value": "function_stop"
+    },
+    "base": {
+      "type": "number",
+      "default": 1,
+      "minimum": 0,
+      "doc": "The exponential base of the interpolation curve. It controls the rate at which the result increases. Higher values make the result increase more towards the high end of the range. With `1` the stops are interpolated linearly."
+    },
+    "property": {
+      "type": "string",
+      "doc": "The name of a feature property to use as the function input.",
+      "default": "$zoom"
+    },
+    "type": {
+      "type": "enum",
+      "values": {
+          "identity": {
+              "doc": "Return the input value as the output value."
+          },
+          "exponential": {
+              "doc": "Generate an output by interpolating between stops just less than and just greater than the function input."
+          },
+          "interval": {
+              "doc": "Return the output value of the stop just less than the function input."
+          },
+          "categorical": {
+              "doc": "Return the output value of the stop equal to the function input."
+          }
+      },
+      "doc": "The interpolation strategy to use in function evaluation.",
+      "default": "exponential"
+    },
+    "colorSpace": {
+      "type": "enum",
+      "values": {
+          "rgb": {
+              "doc": "Use the RGB color space to interpolate color values"
+          },
+          "lab": {
+              "doc": "Use the LAB color space to interpolate color values."
+          },
+          "hcl": {
+              "doc": "Use the HCL color space to interpolate color values, interpolating the Hue, Chroma, and Luminance channels individually."
+          }
+      },
+      "doc": "The color space in which colors interpolated. Interpolating colors in perceptual color spaces like LAB and HCL tend to produce color ramps that look more consistent and produce colors that can be differentiated more easily than those interpolated in RGB space.",
+      "default": "rgb"
+    }
+  },
+  "function_stop": {
+    "type": "array",
+    "minimum": 0,
+    "maximum": 22,
+    "value": [
+      "number",
+      "color"
+    ],
+    "length": 2,
+    "doc": "缩放级别数值对.."
+  },
+  "light": {
+    "anchor": {
+      "type": "enum",
+      "default": "viewport",
+      "values": {
+        "map": {
+          "doc": "The position of the light source is aligned to the rotation of the map."
+        },
+        "viewport": {
+          "doc": "The position of the light source is aligned to the rotation of the viewport."
+        }
+      },
+      "transition": false,
+      "doc": "Whether extruded geometries are lit relative to the map or viewport.",
+      "example": "map",
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.27.0"
+        }
+      }
+    },
+    "position": {
+      "type": "array",
+      "default": [1.15, 210, 30],
+      "length": 3,
+      "value": "number",
+      "transition": true,
+      "function": "interpolated",
+      "zoom-function": true,
+      "property-function": false,
+      "doc": "Position of the light source relative to lit (extruded) geometries, in [r radial coordinate, a azimuthal angle, p polar angle] where r indicates the distance from the center of the base of an object to its light, a indicates the position of the light relative to 0° (0° when `light.anchor` is set to `viewport` corresponds to the top of the viewport, or 0° when `light.anchor` is set to `map` corresponds to due north, and degrees proceed clockwise), and p indicates the height of the light (from 0°, directly above, to 180°, directly below).",
+      "example": [1.5, 90, 80],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.27.0"
+        }
+      }
+    },
+    "color": {
+      "type": "color",
+      "default": "#ffffff",
+      "function": "interpolated",
+      "zoom-function": true,
+      "property-function": false,
+      "transition": true,
+      "doc": "Color tint for lighting extruded geometries.",
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.27.0"
+        }
+      }
+    },
+    "intensity": {
+      "type": "number",
+      "default": 0.5,
+      "minimum": 0,
+      "maximum": 1,
+      "function": "interpolated",
+      "zoom-function": true,
+      "property-function": false,
+      "transition": true,
+      "doc": "Intensity of lighting (on a scale from 0 to 1). Higher numbers will present as more extreme contrast.",
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.27.0"
+        }
+      }
+    }
+  },
+  "paint": [
+    "paint_fill",
+    "paint_line",
+    "paint_circle",
+    "paint_fill-extrusion",
+    "paint_symbol",
+    "paint_raster",
+    "paint_background"
+  ],
+  "paint_fill": {
+    "fill-antialias": {
+      "type": "boolean",
+      "function": "piecewise-constant",
+      "zoom-function": true,
+      "default": true,
+      "doc": "填充是否应该是抗锯齿像素.",
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "fill-opacity": {
+      "type": "number",
+      "function": "interpolated",
+      "zoom-function": true,
+      "property-function": true,
+      "default": 1,
+      "minimum": 0,
+      "maximum": 1,
+      "doc": "整个填充层的透明度,与“fill-color”相比,如果使用，像素为1px时也起作用.",
+      "transition": true,
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        },
+        "data-driven styling": {
+          "js": "0.21.0"
+        }
+      }
+    },
+    "fill-color": {
+      "type": "color",
+      "default": "#000000",
+      "doc": "填充颜色,这个颜色可以通过alpha工具指定为'RGBA',如果使用了它,像素1px不会影响颜色的透明度",
+      "function": "interpolated",
+      "zoom-function": true,
+      "property-function": true,
+      "transition": true,
+      "requires": [
+        {
+          "!": "fill-pattern"
+        }
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        },
+        "data-driven styling": {
+          "js": "0.19.0"
+        }
+      }
+    },
+    "fill-outline-color": {
+      "type": "color",
+      "doc": "填充物的轮廓颜色.如果未指定,则匹配“fill-color”的值.",
+      "function": "interpolated",
+      "zoom-function": true,
+      "property-function": true,
+      "transition": true,
+      "requires": [
+        {
+          "!": "fill-pattern"
+        },
+        {
+          "fill-antialias": true
+        }
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        },
+        "data-driven styling": {
+          "js": "0.19.0"
+        }
+      }
+    },
+    "fill-translate": {
+      "type": "array",
+      "value": "number",
+      "length": 2,
+      "default": [
+        0,
+        0
+      ],
+      "function": "interpolated",
+      "zoom-function": true,
+      "transition": true,
+      "units": "pixels",
+      "doc": "几何结构的偏移.值为[x，y],其中负值分别表示左侧和上侧.",
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "fill-translate-anchor": {
+      "type": "enum",
+      "function": "piecewise-constant",
+      "zoom-function": true,
+      "values": {
+        "map": {
+            "doc": "The fill is translated relative to the map."
+        },
+        "viewport": {
+            "doc": "The fill is translated relative to the viewport."
+        }
+      },
+      "doc": "控制转换的参照点.",
+      "default": "map",
+      "requires": [
+        "fill-translate"
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "fill-pattern": {
+      "type": "string",
+      "function": "piecewise-constant",
+      "zoom-function": true,
+      "transition": true,
+      "doc": "用于绘制图像填充时的雪碧图名称.",
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    }
+  },
+  "paint_fill-extrusion": {
+    "fill-extrusion-opacity": {
+      "type": "number",
+      "function": "interpolated",
+      "zoom-function": true,
+      "property-function": false,
+      "default": 1,
+      "minimum": 0,
+      "maximum": 1,
+      "doc": "整个填充挤压层的透明度.这是在每个层上呈现的.而不是每个基础层的特性.",
+      "transition": true,
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.27.0"
+        }
+      }
+    },
+    "fill-extrusion-color": {
+      "type": "color",
+      "default": "#000000",
+      "doc": "挤压填充的基色.由于这种颜色与根`light`的设置相结合,挤压的表面将会有不同的阴影.如果这个颜色被指定为带有alpha组件的rgba,那么alpha组件将被忽略;使用“填充-挤压-不透明度”来设置图层不透明度.",
+      "function": "interpolated",
+      "zoom-function": true,
+      "property-function": true,
+      "transition": true,
+      "requires": [
+        {
+          "!": "fill-extrusion-pattern"
+        }
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.27.0"
+        },
+        "data-driven styling": {
+          "js": "0.27.0"
+        }
+      }
+    },
+    "fill-extrusion-translate": {
+      "type": "array",
+      "value": "number",
+      "length": 2,
+      "default": [
+        0,
+        0
+      ],
+      "function": "interpolated",
+      "zoom-function": true,
+      "transition": true,
+      "units": "pixels",
+      "doc": "几何的偏移量.值是[x,y]，其中负号分别表示左和上(平面上)。",
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.27.0"
+        }
+      }
+    },
+    "fill-extrusion-translate-anchor": {
+      "type": "enum",
+      "function": "piecewise-constant",
+      "zoom-function": true,
+      "values": {
+        "map": {
+            "doc": "The fill extrusion is translated relative to the map."
+        },
+        "viewport": {
+            "doc": "The fill extrusion is translated relative to the viewport."
+        }
+      },
+      "doc": "控制转换的参照点.",
+      "default": "map",
+      "requires": [
+        "fill-extrusion-translate"
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.27.0"
+        }
+      }
+    },
+    "fill-extrusion-pattern": {
+      "type": "string",
+      "function": "piecewise-constant",
+      "zoom-function": true,
+      "transition": true,
+      "doc": "用于在挤压填充上绘制图像时在sprite中使用的图像名称.对于无缝模式，图像宽度和高度必须是2(2,4,8...,512)的倍数.",
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.27.0"
+        }
+      }
+    },
+    "fill-extrusion-height": {
+      "type": "number",
+      "function": "interpolated",
+      "zoom-function": true,
+      "property-function": true,
+      "default": 0,
+      "minimum": 0,
+      "units": "meters",
+      "doc": "挤压层的高度.",
+      "transition": true,
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.27.0"
+        },
+        "data-driven styling": {
+          "js": "0.27.0"
+        }
+      }
+    },
+    "fill-extrusion-base": {
+      "type": "number",
+      "function": "interpolated",
+      "zoom-function": true,
+      "property-function": true,
+      "default": 0,
+      "minimum": 0,
+      "units": "meters",
+      "doc": "在这个层的底部挤压的高度.必须小于或等于'挤压层的高度'.",
+      "transition": true,
+      "requires": [
+        "fill-extrusion-height"
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.27.0"
+        },
+        "data-driven styling": {
+          "js": "0.27.0"
+        }
+      }
+    }
+  },
+  "paint_line": {
+    "line-opacity": {
+      "type": "number",
+      "doc": "绘制线的透明度.",
+      "function": "interpolated",
+      "zoom-function": true,
+      "property-function": true,
+      "default": 1,
+      "minimum": 0,
+      "maximum": 1,
+      "transition": true,
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        },
+        "data-driven styling": {
+          "js": "0.29.0"
+        }
+      }
+    },
+    "line-color": {
+      "type": "color",
+      "doc": "绘制线条的颜色.",
+      "default": "#000000",
+      "function": "interpolated",
+      "zoom-function": true,
+      "property-function": true,
+      "transition": true,
+      "requires": [
+        {
+          "!": "line-pattern"
+        }
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        },
+        "data-driven styling": {
+          "js": "0.23.0"
+        }
+      }
+    },
+    "line-translate": {
+      "type": "array",
+      "value": "number",
+      "length": 2,
+      "default": [
+        0,
+        0
+      ],
+      "function": "interpolated",
+      "zoom-function": true,
+      "transition": true,
+      "units": "pixels",
+      "doc": "几何结构的偏移.值为[x，y],其中负值分别表示左侧和上侧.",
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "line-translate-anchor": {
+      "type": "enum",
+      "function": "piecewise-constant",
+      "zoom-function": true,
+      "values": {
+        "map": {
+            "doc": "The line is translated relative to the map."
+        },
+        "viewport": {
+            "doc": "The line is translated relative to the viewport."
+        }
+      },
+      "doc": "控制转换的参照点.",
+      "default": "map",
+      "requires": [
+        "line-translate"
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "line-width": {
+      "type": "number",
+      "default": 1,
+      "minimum": 0,
+      "function": "interpolated",
+      "zoom-function": true,
+      "transition": true,
+      "units": "pixels",
+      "doc": "笔画粗细.",
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "line-gap-width": {
+      "type": "number",
+      "default": 0,
+      "minimum": 0,
+      "doc": "在一条线的实际路径外面画一条线.值表示内部间隙的宽度.",
+      "function": "interpolated",
+      "zoom-function": true,
+      "property-function": true,
+      "transition": true,
+      "units": "pixels",
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        },
+        "data-driven styling": {
+            "js": "0.29.0"
+        }
+      }
+    },
+    "line-offset": {
+      "type": "number",
+      "default": 0,
+      "doc": "线偏移.对于线的特征,正值将相对于线的方向偏移到右侧,如果负值偏移到左侧.对于多边形,正值会导致内嵌,而负值会出现外凸.",
+      "function": "interpolated",
+      "zoom-function": true,
+      "property-function": true,
+      "transition": true,
+      "units": "pixels",
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.12.1",
+          "ios": "3.1.0",
+          "android": "3.0.0"
+        },
+        "data-driven styling": {
+          "js": "0.29.0"
+        }
+      }
+    },
+    "line-blur": {
+      "type": "number",
+      "default": 0,
+      "minimum": 0,
+      "function": "interpolated",
+      "zoom-function": true,
+      "property-function": true,
+      "transition": true,
+      "units": "pixels",
+      "doc": "以像素为单位模糊线条.",
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        },
+        "data-driven styling": {
+          "js": "0.29.0"
+        }
+      }
+    },
+    "line-dasharray": {
+      "type": "array",
+      "value": "number",
+      "function": "piecewise-constant",
+      "zoom-function": true,
+      "doc": "指定形成虚线的破折号间隙宽度,后边宽度以线宽按比例缩放.要设置短划线像素,请将当前宽度乘以2.",
+      "minimum": 0,
+      "transition": true,
+      "units": "line widths",
+      "requires": [
+        {
+          "!": "line-pattern"
+        }
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "line-pattern": {
+      "type": "string",
+      "function": "piecewise-constant",
+      "zoom-function": true,
+      "transition": true,
+      "doc": "线条背景图的名称.针对无缝模式,图片宽度必须是2的倍数 (2, 4, 8, ..., 512).",
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    }
+  },
+  "paint_circle": {
+    "circle-radius": {
+      "type": "number",
+      "default": 5,
+      "minimum": 0,
+      "function": "interpolated",
+      "zoom-function": true,
+      "property-function": true,
+      "transition": true,
+      "units": "pixels",
+      "doc": "Circle radius.",
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        },
+        "data-driven styling": {
+          "js": "0.18.0"
+        }
+      }
+    },
+    "circle-color": {
+      "type": "color",
+      "default": "#000000",
+      "doc": "The fill color of the circle.",
+      "function": "interpolated",
+      "zoom-function": true,
+      "property-function": true,
+      "transition": true,
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        },
+        "data-driven styling": {
+          "js": "0.18.0"
+        }
+      }
+    },
+    "circle-blur": {
+      "type": "number",
+      "default": 0,
+      "doc": "Amount to blur the circle. 1 blurs the circle such that only the centerpoint is full opacity.",
+      "function": "interpolated",
+      "zoom-function": true,
+      "property-function": true,
+      "transition": true,
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        },
+        "data-driven styling": {
+          "js": "0.20.0"
+        }
+      }
+    },
+    "circle-opacity": {
+      "type": "number",
+      "doc": "The opacity at which the circle will be drawn.",
+      "default": 1,
+      "minimum": 0,
+      "maximum": 1,
+      "function": "interpolated",
+      "zoom-function": true,
+      "property-function": true,
+      "transition": true,
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        },
+        "data-driven styling": {
+          "js": "0.20.0"
+        }
+      }
+    },
+    "circle-translate": {
+      "type": "array",
+      "value": "number",
+      "length": 2,
+      "default": [0, 0],
+      "function": "interpolated",
+      "zoom-function": true,
+      "transition": true,
+      "units": "pixels",
+      "doc": "几何结构的偏移.值为[x，y],其中负值分别表示左侧和上侧.",
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "circle-translate-anchor": {
+      "type": "enum",
+      "function": "piecewise-constant",
+      "zoom-function": true,
+      "values": {
+        "map": {
+            "doc": "The circle is translated relative to the map."
+        },
+        "viewport": {
+            "doc": "The circle is translated relative to the viewport."
+        }
+      },
+      "doc": "控制转换的参照点.",
+      "default": "map",
+      "requires": [
+        "circle-translate"
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "circle-pitch-scale": {
+      "type": "enum",
+      "function": "piecewise-constant",
+      "zoom-function": true,
+      "values": {
+        "map": {
+            "doc": "Circles are scaled according to their apparent distance to the camera."
+        },
+        "viewport": {
+            "doc": "Circles are not scaled."
+        }
+      },
+      "default": "map",
+      "doc": "Controls the scaling behavior of the circle when the map is pitched.",
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.21.0",
+          "android": "4.2.0"
+        }
+      }
+    },
+    "circle-stroke-width": {
+      "type": "number",
+      "default": 0,
+      "minimum": 0,
+      "function": "interpolated",
+      "zoom-function": true,
+      "property-function": true,
+      "transition": true,
+      "units": "pixels",
+      "doc": "The width of the circle's stroke. Strokes are placed outside of the `circle-radius`.",
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.29.0"
+        },
+        "data-driven styling": {
+          "js": "0.29.0"
+        }
+      }
+    },
+    "circle-stroke-color": {
+      "type": "color",
+      "default": "#000000",
+      "doc": "The stroke color of the circle.",
+      "function": "interpolated",
+      "zoom-function": true,
+      "property-function": true,
+      "transition": true,
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.29.0"
+        },
+        "data-driven styling": {
+          "js": "0.29.0"
+        }
+      }
+    },
+    "circle-stroke-opacity": {
+      "type": "number",
+      "doc": "The opacity of the circle's stroke.",
+      "default": 1,
+      "minimum": 0,
+      "maximum": 1,
+      "function": "interpolated",
+      "zoom-function": true,
+      "property-function": true,
+      "transition": true,
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.29.0"
+        },
+        "data-driven styling": {
+          "js": "0.29.0"
+        }
+      }
+    }
+  },
+  "paint_symbol": {
+    "icon-opacity": {
+      "doc": "绘制图标的透明度.",
+      "type": "number",
+      "default": 1,
+      "minimum": 0,
+      "maximum": 1,
+      "function": "interpolated",
+      "zoom-function": true,
+      "transition": true,
+      "requires": [
+        "icon-image"
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "icon-color": {
+      "type": "color",
+      "default": "#000000",
+      "function": "interpolated",
+      "zoom-function": true,
+      "transition": true,
+      "doc": "图标的颜色.这只能用于sdf图标.",
+      "requires": [
+        "icon-image"
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "icon-halo-color": {
+      "type": "color",
+      "default": "rgba(0, 0, 0, 0)",
+      "function": "interpolated",
+      "zoom-function": true,
+      "transition": true,
+      "doc": "图标的光晕的颜色.图标光晕只能与SDF图标一起使用.",
+      "requires": [
+        "icon-image"
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "icon-halo-width": {
+      "type": "number",
+      "default": 0,
+      "minimum": 0,
+      "function": "interpolated",
+      "zoom-function": true,
+      "transition": true,
+      "units": "pixels",
+      "doc": "光环到图标轮廓的距离.",
+      "requires": [
+        "icon-image"
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "icon-halo-blur": {
+      "type": "number",
+      "default": 0,
+      "minimum": 0,
+      "function": "interpolated",
+      "zoom-function": true,
+      "transition": true,
+      "units": "pixels",
+      "doc": "将光晕淡出外面.",
+      "requires": [
+        "icon-image"
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "icon-translate": {
+      "type": "array",
+      "value": "number",
+      "length": 2,
+      "default": [
+        0,
+        0
+      ],
+      "function": "interpolated",
+      "zoom-function": true,
+      "transition": true,
+      "units": "pixels",
+      "doc": "图标的锚点从原始位置移动的距离.正值表示右下,而负值表示左下.",
+      "requires": [
+        "icon-image"
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "icon-translate-anchor": {
+      "type": "enum",
+      "function": "piecewise-constant",
+      "zoom-function": true,
+      "values": {
+        "map": {
+            "doc": "Icons are translated relative to the map."
+        },
+        "viewport": {
+            "doc": "Icons are translated relative to the viewport."
+        }
+      },
+      "doc": "控制转换的参照点.",
+      "default": "map",
+      "requires": [
+        "icon-image",
+        "icon-translate"
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "text-opacity": {
+      "type": "number",
+      "doc": "绘制文本的透明度.",
+      "default": 1,
+      "minimum": 0,
+      "maximum": 1,
+      "function": "interpolated",
+      "zoom-function": true,
+      "transition": true,
+      "requires": [
+        "text-field"
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "text-color": {
+      "type": "color",
+      "doc": "绘制文本的颜色.",
+      "default": "#000000",
+      "function": "interpolated",
+      "zoom-function": true,
+      "transition": true,
+      "requires": [
+        "text-field"
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "text-halo-color": {
+      "type": "color",
+      "default": "rgba(0, 0, 0, 0)",
+      "function": "interpolated",
+      "zoom-function": true,
+      "transition": true,
+      "doc": "文字的光晕的颜色,有助于它从背景中清晰显示.",
+      "requires": [
+        "text-field"
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "text-halo-width": {
+      "type": "number",
+      "default": 0,
+      "minimum": 0,
+      "function": "interpolated",
+      "zoom-function": true,
+      "transition": true,
+      "units": "pixels",
+      "doc": "光环与字体轮廓的距离。 最大文本光晕宽度是字体大小的1/4。",
+      "requires": [
+        "text-field"
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "text-halo-blur": {
+      "type": "number",
+      "default": 0,
+      "minimum": 0,
+      "function": "interpolated",
+      "zoom-function": true,
+      "transition": true,
+      "units": "pixels",
+      "doc": "光环外面的淡出距离.",
+      "requires": [
+        "text-field"
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "text-translate": {
+      "type": "array",
+      "value": "number",
+      "length": 2,
+      "default": [
+        0,
+        0
+      ],
+      "function": "interpolated",
+      "zoom-function": true,
+      "transition": true,
+      "units": "pixels",
+      "doc": "文本的锚点从原始位置移动的距离.正值表示右下，而负值表示左上.",
+      "requires": [
+        "text-field"
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "text-translate-anchor": {
+      "type": "enum",
+      "function": "piecewise-constant",
+      "zoom-function": true,
+      "values": {
+        "map": {
+            "doc": "The text is translated relative to the map."
+        },
+        "viewport": {
+            "doc": "The text is translated relative to the viewport."
+        }
+      },
+      "doc": "控制转换的参照点.",
+      "default": "map",
+      "requires": [
+        "text-field",
+        "text-translate"
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    }
+  },
+  "paint_raster": {
+    "raster-opacity": {
+      "type": "number",
+      "doc": "绘制图像的不透明度.",
+      "default": 1,
+      "minimum": 0,
+      "maximum": 1,
+      "function": "interpolated",
+      "zoom-function": true,
+      "transition": true,
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "raster-hue-rotate": {
+      "type": "number",
+      "default": 0,
+      "period": 360,
+      "function": "interpolated",
+      "zoom-function": true,
+      "transition": true,
+      "units": "degrees",
+      "doc": "旋转颜色轮盘周围的色调.",
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "raster-brightness-min": {
+      "type": "number",
+      "function": "interpolated",
+      "zoom-function": true,
+      "doc": "Increase or reduce the brightness of the image. The value is the minimum brightness.",
+      "default": 0,
+      "minimum": 0,
+      "maximum": 1,
+      "transition": true,
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "raster-brightness-max": {
+      "type": "number",
+      "function": "interpolated",
+      "zoom-function": true,
+      "doc": "Increase or reduce the brightness of the image. The value is the maximum brightness.",
+      "default": 1,
+      "minimum": 0,
+      "maximum": 1,
+      "transition": true,
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "raster-saturation": {
+      "type": "number",
+      "doc": "增加或减少图片的饱和度.",
+      "default": 0,
+      "minimum": -1,
+      "maximum": 1,
+      "function": "interpolated",
+      "zoom-function": true,
+      "transition": true,
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "raster-contrast": {
+      "type": "number",
+      "doc": "增加或减少图片的对比度.",
+      "default": 0,
+      "minimum": -1,
+      "maximum": 1,
+      "function": "interpolated",
+      "zoom-function": true,
+      "transition": true,
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "raster-fade-duration": {
+      "type": "number",
+      "default": 300,
+      "minimum": 0,
+      "function": "interpolated",
+      "zoom-function": true,
+      "transition": true,
+      "units": "milliseconds",
+      "doc": "添加新图块时的渐变持续时间.",
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    }
+  },
+  "paint_background": {
+    "background-color": {
+      "type": "color",
+      "default": "#000000",
+      "doc": "绘制背景的颜色.",
+      "function": "interpolated",
+      "zoom-function": true,
+      "transition": true,
+      "requires": [
+        {
+          "!": "background-pattern"
+        }
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "background-pattern": {
+      "type": "string",
+      "function": "piecewise-constant",
+      "zoom-function": true,
+      "transition": true,
+      "doc": "用来绘制背景图的雪碧图名称. 对于无缝模式的图案, 图片宽和高必须是2的倍数(2, 4, 8, ..., 512).",
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    },
+    "background-opacity": {
+      "type": "number",
+      "default": 1,
+      "minimum": 0,
+      "maximum": 1,
+      "doc": "背景的透明度",
+      "function": "interpolated",
+      "zoom-function": true,
+      "transition": true,
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "ios": "2.0.0",
+          "android": "2.0.1"
+        }
+      }
+    }
+  },
+  "transition": {
+    "duration": {
+      "type": "number",
+      "default": 300,
+      "minimum": 0,
+      "units": "milliseconds",
+      "doc": "指定完整过渡的时间."
+    },
+    "delay": {
+      "type": "number",
+      "default": 0,
+      "minimum": 0,
+      "units": "milliseconds",
+      "doc": "转换开始之前的时间."
+    }
+  }
+}

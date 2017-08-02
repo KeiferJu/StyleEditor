@@ -1,0 +1,91 @@
+// TOOLBAR
+.maputnik-toolbar {
+  position: fixed;
+  height: 30px;
+  width:$layout-list-width;
+  z-index: 3;
+  left: 0;
+  top: 0;
+  background-color: $color-title-bg;
+
+  border-right-color: #787878;
+  border-right-style: solid;
+  border-right-width: 5px;
+}
+
+.maputnik-toolbar-logo {
+  //width: 180px;
+  //text-align: left;
+  //background-color: $color-title-bg;
+  //padding: $margin-2;
+  //height: $toolbar-height;
+  margin-left: 10px;
+  margin-right: 10px;
+  padding-top: 5px;
+
+  h1 {
+    display: inline;
+  }
+
+  img {
+    width: 30px;
+    height: 30px;
+    //padding-right: $margin-2;
+    //vertical-align: middle;
+  }
+}
+.maputnik-toolbar-title {
+  line-height: 40px;
+  margin-right: 50px;
+  //vertical-align: 5px;
+  font-size: 25px;
+  color: #ffffff;
+  font-weight: bold;
+  margin-left: 10px;
+  //text-shadow:0 0 5px #CCCCCC, 0 0 10px #CCCCCC, 0 0 15px #CCCCCC, 0 0 20px #095816, 0 0 25px #095816, 0 0 30px #095816, 0 0 50px #095816, 0 0 80px #095816, 0 0 100px #095816, 0 0 150px #095816;
+  //text-shadow: 0 1px 0 #ccc, 0 2px 0 #c9c9c9, 0 3px 0 #bbb, 0 4px 0 #b9b9b9, 0 5px 0 #aaa, 0 6px 1px rgba(0,0,0,0.1), 0 0 5px rgba(0,0,0,0.1),0 1px 3px rgba(0,0,0,0.3),0 3px 5px rgba(0,0,0,0.2),0 5px 10px rgba(0,0,0,0.25);
+
+}
+
+
+.maputnik-toolbar-link {
+  //vertical-align: top;
+  height: $toolbar-height;
+  display: inline-block;
+  padding: $margin-3;
+  font-size: $font-size-5;
+  cursor: pointer;
+  color: $color-white-title;
+  text-decoration: none;
+
+  &:hover {
+    background-color: $color-title-bg-select;
+  }
+}
+
+.maputnik-toolbar-action {
+  //vertical-align: top;
+  //height: 50px;
+  display: inline-block;
+  padding: 10px;
+  font-size: $font-size-5;
+  font-weight: 500;
+  cursor: pointer;
+  color: $color-white-title;
+  text-decoration: none;
+
+  &:hover {
+    //background-color: $color-title-bg-select;
+    color: $color-black-title;
+    //height: 50px;
+  }
+}
+
+.maputnik-icon-text {
+  padding-left: $margin-1;
+}
+
+.maputnik-icon-action {
+  display: inline;
+  margin-left: $margin-1;
+}

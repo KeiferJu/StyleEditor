@@ -1,0 +1,50 @@
+$color-error: #cf4a4a;
+$color-title-bg: #0b73d0;
+$color-title-bg-select: #06a2ff;
+$color-white-title: #ffffff;
+$color-black-title: #333333;
+$color-gray: #26282e;
+$color-gray-high: #8e8e8e;
+$color-gray-lower: #8e8e8e;
+
+
+$color-input: #c7c7c7;
+$color-input-font: #333333;
+$color-input-select: #333333;
+
+$color-close-button: #333333;
+
+
+$margin-1: 3px;
+$margin-2: 5px;
+$margin-3: 10px;
+$margin-4: 30px;
+$margin-5: 40px;
+$font-size-1: 24px;
+$font-size-2: 20px;
+$font-size-3: 18px;
+$font-size-4: 16px;
+$font-size-5: 14px;
+$font-size-6: 12px;
+$font-family: Microsoft YaHei, sans-serif;
+
+$toolbar-height: 40px;
+$layout-list-width: 200px;
+
+$layout-list-draw: 300px;
+
+@import 'mixins';
+@import 'reset';
+@import 'base';
+@import 'components';
+@import 'scrollbar';
+@import 'picker';
+@import 'toolbar';
+@import 'modal';
+@import 'export';
+@import 'layout';
+@import 'layer';
+@import 'input';
+@import 'filtereditor';
+@import 'zoomproperty';
+@import 'popup';

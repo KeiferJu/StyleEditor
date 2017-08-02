@@ -1,0 +1,22 @@
+language: node_js
+addons:
+  firefox: latest
+os:
+  - linux
+  - osx
+node_js:
+  - "4.6"
+  - "5.11"
+  - "6.1"
+before_install:
+  - export CHROME_BIN=chromium-browser
+  - export DISPLAY=:99.0
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sh -e /etc/init.d/xvfb start; fi
+install:
+  - npm install
+script:
+  - mkdir public
+  - node --stack_size=100000 $(which npm) run build
+  - npm run lint
+  - npm run lint-styles
+  - npm run test

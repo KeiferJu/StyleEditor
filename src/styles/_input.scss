@@ -1,0 +1,143 @@
+//INPUT
+.maputnik-input {
+  height: 24px;
+  width: 100%;
+  display: block;
+  box-sizing: border-box;
+  font-size: $font-size-6;
+  line-height: 2;
+  padding-left: $margin-2;
+  padding-right: $margin-2;
+  background-color: $color-input;
+  color: $color-input-font;
+}
+
+.maputnik-string {
+  @extend .maputnik-input;
+}
+
+.maputnik-number {
+  @extend .maputnik-input;
+}
+
+//COLOR PICKER
+.maputnik-color {
+  @extend .maputnik-input;
+
+  height: 26px;
+}
+
+.maputnik-color-wrapper {
+  position: relative;
+  display: inline;
+}
+
+// ARRAY
+
+.maputnik-array {
+  > * {
+    margin-bottom: $margin-3;
+  }
+}
+
+// SELECT
+.maputnik-select {
+  @extend .maputnik-input;
+  height: 24px;
+  option{
+    background-color: $color-gray-high;
+  }
+}
+
+// MULTIBUTTON
+.maputnik-multibutton {
+  padding: 0;
+
+  .maputnik-button {
+    margin-right: $margin-1;
+    position: relative;
+    top: 5px;
+  }
+}
+
+.maputnik-button-selected {
+  background-color: $color-title-bg-select;
+  outline: 1px $color-white-title;
+  color: white;
+}
+
+// CHECKBOX
+.maputnik-checkbox {
+  position: absolute;
+  z-index: -1;
+  opacity: 0;
+  width: 50%;
+
+  &-wrapper {
+    @extend .maputnik-input;
+
+    padding-left: 0;
+    padding-right: 0;
+    position: relative;
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+    max-width: 24px;
+  }
+
+  &-box {
+    display: inline-block;
+    text-align: center;
+    height: 24px;
+    width: 24px;
+    margin-right: 5px;
+    background-color: $color-input;
+    //border-radius: 2px;
+    //border-style: solid;
+    //border-width: 2px;
+    //border-color: $color-input-font;
+    //transition: background-color 0.1s ease-out;
+  }
+
+  &-icon {
+    width: 50%;
+    height: 50%;
+    margin-top: 1px;
+    fill: $color-black-title;
+  }
+}
+
+// AUTOCOMPLETE
+.maputnik-autocomplete {
+  &-menu {
+    border: none;
+    padding: 2px 0;
+    position: fixed;
+    overflow: auto;
+    max-height: 50%;
+    background: $color-gray-high;
+    z-index: 3;
+  }
+
+  &-menu-item {
+    user-select: none;
+    color: $color-white-title;
+    cursor: default;
+    padding: $margin-1;
+    font-size: $font-size-6;
+    z-index: 3;
+    background: $color-gray-high;
+  }
+
+  &-menu-item-selected {
+    background: $color-title-bg-select;
+    color: $color-black-title;
+  }
+}
+
+// FONT
+.maputnik-font {
+  .maputnik-autocomplete:not(:last-child) {
+    margin-bottom: $margin-3;
+  }
+}

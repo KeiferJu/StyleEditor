@@ -1,0 +1,1109 @@
+{
+  "$version": 6,
+  "$root": {
+    "version": {
+      "required": true,
+      "type": "enum",
+      "values": [
+        6
+      ],
+      "doc": "Stylesheet version number. Must be 6."
+    },
+    "constants": {
+      "type": "constants",
+      "doc": "要在层中引用的常量的对象."
+    },
+    "sources": {
+      "required": true,
+      "type": "sources",
+      "doc": "数据源格式."
+    },
+    "sprite": {
+      "type": "string",
+      "doc": "用于检索雪碧图像和元数据的基本URL. 扩展名`.png`，`.json`和比例因子`@ 2x.png`将被自动附加."
+    },
+    "glyphs": {
+      "type": "string",
+      "doc": "用于以PBF格式加载有符号距离字段集的URL模板.有效的令牌是{fontstack}和{range}."
+    },
+    "transition": {
+      "type": "transition",
+      "doc": "全局转换定义,用作属性间的默认值."
+    },
+    "layers": {
+      "required": true,
+      "type": "array",
+      "value": "layer",
+      "doc": "图层将依照这个顺序绘制."
+    }
+  },
+  "constants": {
+    "*": {
+      "type": "*",
+      "doc": "一个常数，将在引用的地方逐字地替代。 这可以是任何东西，包括对象和数组。 所有变量名必须带有“@”符号前缀."
+    }
+  },
+  "sources": {
+    "*": {
+      "type": "source",
+      "doc": "数据源的规范。 对于矢量和光栅源，必须提供TileJSON或TileJSON的URL。 对于GeoJSON和视频源，必须提供URL."
+    }
+  },
+  "source": [
+    "source_tile",
+    "source_geojson",
+    "source_video"
+  ],
+  "source_tile": {
+    "type": {
+      "required": true,
+      "type": "enum",
+      "values": [
+        "vector",
+        "raster"
+      ],
+      "doc": "资源的数据类型."
+    },
+    "url": {
+      "type": "string",
+      "doc": "TileJSON资源的URL。 支持的协议是“http：”,“https：”和“mapbox：// <mapid>”."
+    },
+    "tiles": {
+      "type": "array",
+      "value": "string",
+      "doc": "如TileJSON规范中所述,一个或多个图块源URL的数组."
+    },
+    "minzoom": {
+      "type": "number",
+      "default": 0,
+      "doc": "TileJSON规范中可以使用最小缩放级别."
+    },
+    "maxzoom": {
+      "type": "number",
+      "default": 22,
+      "doc": "TileJSON规范中可以使用最大缩放级别.当以较高缩放级别显示地图时,将使用maxzoom上的图块的数据."
+    },
+    "tileSize": {
+      "type": "number",
+      "default": 512,
+      "units": "pixels",
+      "doc": "显示此图层的图块的最小视觉尺寸.仅可配置为栅格图层."
+    },
+    "*": {
+      "type": "*",
+      "doc": "配置数据源的其他键."
+    }
+  },
+  "source_geojson": {
+    "type": {
+      "required": true,
+      "type": "enum",
+      "values": [
+        "geojson"
+      ]
+    },
+    "data": {
+      "type": "*"
+    }
+  },
+  "source_video": {
+    "type": {
+      "required": true,
+      "type": "enum",
+      "values": [
+        "video"
+      ]
+    },
+    "url": {
+      "required": true,
+      "type": "array",
+      "value": "string",
+      "doc": "URLs to video content in order of preferred format."
+    },
+    "coordinates": {
+      "required": true,
+      "type": "array",
+      "length": 4,
+      "value": {
+        "type": "array",
+        "length": 2,
+        "value": "number"
+      }
+    }
+  },
+  "layer": {
+    "id": {
+      "type": "string",
+      "doc": "唯一图层名称."
+    },
+    "type": {
+      "type": "enum",
+      "values": [
+        "fill",
+        "line",
+        "symbol",
+        "raster",
+        "background"
+      ],
+      "doc": "这个图层的呈现形式."
+    },
+    "ref": {
+      "type": "string",
+      "doc": "引用另一个层来复制`type`,`source`,`source-layer`,`minzoom`,`maxzoom`,`filter`和`layout`属性.允许层共享处理提高效率."
+    },
+    "source": {
+      "type": "string",
+      "doc": "用于描述这个图层资源名称."
+    },
+    "source-layer": {
+      "type": "string",
+      "doc": "图层使用的矢量图块资源.如果支持多层,则必须添加."
+    },
+    "minzoom": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 22,
+      "doc": "图层呈现的最小缩放级别."
+    },
+    "maxzoom": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 22,
+      "doc": "图层呈现的最大缩放级别."
+    },
+    "interactive": {
+      "type": "boolean",
+      "doc": "打开查询此图层中的特殊数据的交互.",
+      "default": false
+    },
+    "filter": {
+      "type": "filter",
+      "doc": "自定义条件,只显示符合条件的配置."
+    },
+    "layers": {
+      "type": "array",
+      "value": "layer",
+      "doc": "如果`type`是`raster`,那么子层被合成到上一级层级上."
+    },
+    "layout": {
+      "type": "layout",
+      "doc": "图层的布局属性."
+    },
+    "paint": {
+      "type": "paint",
+      "doc": "该图层的默认绘画属性."
+    },
+    "paint.*": {
+      "type": "paint",
+      "doc": "Class-specific paint properties for this layer. The class name is the part after the first dot."
+    }
+  },
+  "layout": [
+    "layout_fill",
+    "layout_line",
+    "layout_symbol",
+    "layout_raster",
+    "layout_background"
+  ],
+  "layout_background": {
+  },
+  "layout_fill": {
+  },
+  "layout_line": {
+    "line-cap": {
+      "type": "enum",
+      "values": [
+        "butt",
+        "round",
+        "square"
+      ],
+      "default": "butt",
+      "doc": "线的尾端."
+    },
+    "line-join": {
+      "type": "enum",
+      "values": [
+        "bevel",
+        "round",
+        "miter"
+      ],
+      "default": "miter",
+      "doc": "线的交点."
+    },
+    "line-miter-limit": {
+      "type": "number",
+      "default": 2,
+      "doc": "用于自动转换斜角连接形成新的角度.",
+      "requires": [
+        {
+          "line-join": "miter"
+        }
+      ]
+    },
+    "line-round-limit": {
+      "type": "number",
+      "default": 1,
+      "doc": "用于自动将圆形连接转换为斜角连接.",
+      "requires": [
+        {
+          "line-join": "round"
+        }
+      ]
+    }
+  },
+  "layout_symbol": {
+    "symbol-placement": {
+      "type": "enum",
+      "values": [
+          "point",
+          "line"
+      ],
+      "default": "point",
+      "doc": "相对于其几何结构放置标签.`line`只能在LineStrings和Polygon上使用."
+    },
+    "symbol-min-distance": {
+      "type": "number",
+      "default": 250,
+      "minimum": 1,
+      "units": "pixels",
+      "doc": "两个标识之间的最小距离.",
+      "requires": [
+        {
+          "symbol-placement": "line"
+        }
+      ]
+    },
+    "symbol-avoid-edges": {
+      "type": "boolean",
+      "default": false,
+      "doc": "如果为true,则标记不会不会跨越边缘以避免相互覆盖.建议在层中没有足够的填充在矢量图块中来防止碰撞,或者如果它是一个点符号层放置在线符号层之后."
+    },
+    "icon-allow-overlap": {
+      "type": "boolean",
+      "default": false,
+      "doc": "如果为真,即使图标与其他图标和文字相冲突,图标也将显示.",
+      "requires": [
+        "icon-image"
+      ]
+    },
+    "icon-ignore-placement": {
+      "type": "boolean",
+      "default": false,
+      "doc": "如果为true,图标不会影响其他图标和文字的放置.",
+      "requires": [
+        "icon-image"
+      ]
+    },
+    "icon-optional": {
+      "type": "boolean",
+      "default": false,
+      "doc": "如果为true,则可以显示文本,而不显示相应的图标.",
+      "requires": [
+        "icon-image",
+        "text-field"
+      ]
+    },
+    "icon-rotation-alignment": {
+      "type": "enum",
+      "values": [
+        "map",
+        "viewport"
+      ],
+      "default": "viewport",
+      "doc": "地图旋转时图标的方向.",
+      "requires": [
+        "icon-image"
+      ]
+    },
+    "icon-max-size": {
+      "type": "number",
+      "default": 1,
+      "minimum": 0,
+      "doc": "缩放图标的最大尺度.",
+      "requires": [
+        "icon-image"
+      ]
+    },
+    "icon-image": {
+      "type": "string",
+      "doc": "替换了一个带有{tokens}的字符串，引用要获取的data属性.",
+      "tokens": true
+    },
+    "icon-rotate": {
+      "type": "number",
+      "default": 0,
+      "period": 360,
+      "units": "degrees",
+      "doc": "顺时针旋转图标.",
+      "requires": [
+        "icon-image"
+      ]
+    },
+    "icon-padding": {
+      "type": "number",
+      "default": 2,
+      "minimum": 0,
+      "units": "pixels",
+      "doc": "围绕图标边框的填充值,以避免图标冲突.",
+      "requires": [
+        "icon-image"
+      ]
+    },
+    "icon-keep-upright": {
+      "type": "boolean",
+      "default": false,
+      "doc": "如果为true,图标可能会被翻转,以防止它被颠倒",
+      "requires": [
+        "icon-image",
+        {
+          "icon-rotation-alignment": "map"
+        }
+      ]
+    },
+    "icon-offset": {
+      "type": "array",
+      "value": "number",
+      "length": 2,
+      "default": [
+        0,
+        0
+      ],
+      "doc": "图标的偏移距离.值为[x，y],其中负值分别表示左侧和上侧.",
+      "requires": [
+        "icon-image"
+      ]
+    },
+    "text-rotation-alignment": {
+      "type": "enum",
+      "values": [
+        "map",
+        "viewport"
+      ],
+      "default": "viewport",
+      "doc": "地图旋转时图标或文字的方向.",
+      "requires": [
+        "text-field"
+      ]
+    },
+    "text-field": {
+      "type": "string",
+      "default": "",
+      "tokens": true,
+      "doc": "用于文本标签的值.特性属性使用诸如{ field_name }之类的命令来指定."
+    },
+    "text-font": {
+      "type": "string",
+      "default": "Open Sans Regular, Arial Unicode MS Regular",
+      "doc": "用于显示文本的字体.",
+      "requires": [
+        "text-field"
+      ]
+    },
+    "text-max-size": {
+      "type": "number",
+      "default": 16,
+      "minimum": 0,
+      "units": "pixels",
+      "doc": "The maximum size text will be laid out, to calculate collisions with.",
+      "requires": [
+        "text-field"
+      ]
+    },
+    "text-max-width": {
+      "type": "number",
+      "default": 15,
+      "minimum": 0,
+      "units": "em",
+      "doc": "文本换行的最大行宽.",
+      "requires": [
+        "text-field"
+      ]
+    },
+    "text-line-height": {
+      "type": "number",
+      "default": 1.2,
+      "units": "em",
+      "doc": "多行文本的文本行距.",
+      "requires": [
+        "text-field"
+      ]
+    },
+    "text-letter-spacing": {
+      "type": "number",
+      "default": 0,
+      "units": "em",
+      "doc": "文字间距值.",
+      "requires": [
+        "text-field"
+      ]
+    },
+    "text-justify": {
+      "type": "enum",
+      "values": [
+        "left",
+        "center",
+        "right"
+      ],
+      "default": "center",
+      "doc": "文本对齐选项.",
+      "requires": [
+        "text-field"
+      ]
+    },
+    "text-anchor": {
+      "type": "enum",
+      "values": [
+        "center",
+        "left",
+        "right",
+        "top",
+        "bottom",
+        "top-left",
+        "top-right",
+        "bottom-left",
+        "bottom-right"
+      ],
+      "default": "center",
+      "doc": "设置文本的哪一部分最靠近锚点.",
+      "requires": [
+        "text-field"
+      ]
+    },
+    "text-max-angle": {
+      "type": "number",
+      "default": 45,
+      "units": "degrees",
+      "doc": "相邻字符之间的最大角度变化.",
+      "requires": [
+        "text-field",
+        {
+          "symbol-placement": "line"
+        }
+      ]
+    },
+    "text-rotate": {
+      "type": "number",
+      "default": 0,
+      "period": 360,
+      "units": "degrees",
+      "doc": "顺时针旋转文字.",
+      "requires": [
+        "text-field"
+      ]
+    },
+    "text-padding": {
+      "type": "number",
+      "default": 2,
+      "minimum": 0,
+      "units": "pixels",
+      "doc": "围绕文本边界框填充以避免标签冲突.",
+      "requires": [
+        "text-field"
+      ]
+    },
+    "text-keep-upright": {
+      "type": "boolean",
+      "default": true,
+      "doc": "如果为true,文本可以垂直翻转,以防止它被颠倒.",
+      "requires": [
+        "text-field",
+        {
+          "text-rotation-alignment": "map"
+        }
+      ]
+    },
+    "text-transform": {
+      "type": "enum",
+      "values": [
+        "none",
+        "uppercase",
+        "lowercase"
+      ],
+      "default": "none",
+      "doc": "指定文本大小写,类似于CSS`text-transform`属性.",
+      "requires": [
+        "text-field"
+      ]
+    },
+    "text-offset": {
+      "type": "array",
+      "doc": "指定文本从水平和垂直方向偏移的距离.",
+      "value": "number",
+      "units": "ems",
+      "length": 2,
+      "default": [
+        0,
+        0
+      ],
+      "requires": [
+        "text-field"
+      ]
+    },
+    "text-allow-overlap": {
+      "type": "boolean",
+      "default": false,
+      "doc": "如果为true,即使与其他图标和标签相冲突,文本也将显示.",
+      "requires": [
+        "text-field"
+      ]
+    },
+    "text-ignore-placement": {
+      "type": "boolean",
+      "default": false,
+      "doc": "如果为true,则文字不会影响其他图标和标签的放置.",
+      "requires": [
+        "text-field"
+      ]
+    },
+    "text-optional": {
+      "type": "boolean",
+      "default": false,
+      "doc": "如果为true,则可以显示图标而不显示相应的文本.",
+      "requires": [
+        "text-field",
+        "icon-image"
+      ]
+    }
+  },
+  "layout_raster": {
+    "raster-size": {
+      "type": "number",
+      "default": 256,
+      "minimum": 0,
+      "maximum": 3855,
+      "units": "pixels",
+      "doc": "The texture image size at which vector layers will be rasterized. Will scale to match the visual tile size."
+    },
+    "raster-blur": {
+      "type": "number",
+      "default": 0,
+      "minimum": 0,
+      "units": "pixels",
+      "doc": "Blur radius applied to the raster texture before display."
+    }
+  },
+  "filter": {
+    "type": "array",
+    "value": "*"
+  },
+  "filter_operator": {
+    "type": "enum",
+    "values": [
+      "==",
+      "!=",
+      ">",
+      ">=",
+      "<",
+      "<=",
+      "in",
+      "!in",
+      "all",
+      "any",
+      "none"
+    ]
+  },
+  "geometry_type": {
+    "type": "enum",
+    "values": [
+      "Point",
+      "LineString",
+      "Polygon"
+    ]
+  },
+  "function": {
+    "stops": {
+      "type": "array",
+      "required": true,
+      "doc": "An array of stops.",
+      "value": "function_stop"
+    },
+    "base": {
+      "type": "number",
+      "default": 1,
+      "minimum": 0,
+      "doc": "The exponential base of the interpolation curve. It controls the rate at which the result increases. Higher values make the result increase more towards the high end of the range. With `1` the stops are interpolated linearly."
+    }
+  },
+  "function_stop": {
+    "type": "array",
+    "minimum": 0,
+    "maximum": 22,
+    "value": [
+      "number",
+      "color"
+    ],
+    "length": 2,
+    "doc": "缩放级别数值对."
+  },
+  "paint": [
+    "paint_fill",
+    "paint_line",
+    "paint_symbol",
+    "paint_raster",
+    "paint_background"
+  ],
+  "paint_fill": {
+    "fill-antialias": {
+      "type": "boolean",
+      "default": true,
+      "function": true,
+      "doc": "填充是否应该是抗锯齿像素."
+    },
+    "fill-opacity": {
+      "type": "number",
+      "function": true,
+      "default": 1,
+      "minimum": 0,
+      "maximum": 1,
+      "doc": "填充颜色的透明度.",
+      "transition": true
+    },
+    "fill-color": {
+      "type": "color",
+      "default": "#000000",
+      "doc": "The color of the fill.",
+      "function": true,
+      "transition": true,
+      "requires": [
+        {
+          "!": "fill-image"
+        }
+      ]
+    },
+    "fill-outline-color": {
+      "type": "color",
+      "doc": "填充物的轮廓颜色.如果未指定,则匹配“fill-color”的值.",
+      "function": true,
+      "transition": true,
+      "requires": [
+        {
+          "!": "fill-image"
+        },
+        {
+          "fill-antialias": true
+        }
+      ]
+    },
+    "fill-translate": {
+      "type": "array",
+      "value": "number",
+      "length": 2,
+      "default": [
+        0,
+        0
+      ],
+      "function": true,
+      "transition": true,
+      "units": "pixels",
+      "doc": "几何结构的偏移.值为[x，y],其中负值分别表示左侧和上侧."
+    },
+    "fill-translate-anchor": {
+      "type": "enum",
+      "values": [
+        "map",
+        "viewport"
+      ],
+      "doc": "Control whether the translation is relative to the map (north) or viewport (screen)",
+      "default": "map",
+      "requires": [
+        "fill-translate"
+      ]
+    },
+    "fill-image": {
+      "type": "string",
+      "doc": "用于绘制图像填充时的雪碧图名称."
+    }
+  },
+  "paint_line": {
+    "line-opacity": {
+      "type": "number",
+      "doc": "绘制线的透明度.",
+      "function": true,
+      "default": 1,
+      "minimum": 0,
+      "maximum": 1,
+      "transition": true
+    },
+    "line-color": {
+      "type": "color",
+      "doc": "绘制线条的颜色.",
+      "default": "#000000",
+      "function": true,
+      "transition": true,
+      "requires": [
+        {
+          "!": "line-image"
+        }
+      ]
+    },
+    "line-translate": {
+      "type": "array",
+      "value": "number",
+      "length": 2,
+      "default": [
+        0,
+        0
+      ],
+      "function": true,
+      "transition": true,
+      "units": "pixels",
+      "doc": "几何结构的偏移.值为[x，y],其中负值分别表示左侧和上侧."
+    },
+    "line-translate-anchor": {
+      "type": "enum",
+      "values": [
+        "map",
+        "viewport"
+      ],
+      "doc": "Control whether the translation is relative to the map (north) or viewport (screen)",
+      "default": "map",
+      "requires": [
+        "line-translate"
+      ]
+    },
+    "line-width": {
+      "type": "number",
+      "default": 1,
+      "minimum": 0,
+      "function": true,
+      "transition": true,
+      "units": "pixels",
+      "doc": "笔画粗细."
+    },
+    "line-gap-width": {
+      "type": "number",
+      "default": 0,
+      "minimum": 0,
+      "doc": "在一条线的实际路径外面画一条线.值表示内部间隙的宽度.",
+      "function": true,
+      "transition": true,
+      "units": "pixels"
+    },
+    "line-blur": {
+      "type": "number",
+      "default": 0,
+      "minimum": 0,
+      "function": true,
+      "transition": true,
+      "units": "pixels",
+      "doc": "以像素为单位模糊线条."
+    },
+    "line-dasharray": {
+      "type": "array",
+      "value": "number",
+      "doc": "指定一行中的虚线之间的大小和差距.",
+      "length": 2,
+      "default": [
+        1,
+        -1
+      ],
+      "minimum": 0,
+      "function": true,
+      "transition": true,
+      "requires": [
+        {
+          "!": "line-image"
+        }
+      ]
+    },
+    "line-image": {
+      "type": "string",
+      "doc": "线条背景图的名称."
+    }
+  },
+  "paint_symbol": {
+    "icon-opacity": {
+      "doc": "绘制图标的透明度.",
+      "type": "number",
+      "default": 1,
+      "minimum": 0,
+      "maximum": 1,
+      "function": true,
+      "transition": true,
+      "requires": [
+        "icon-image"
+      ]
+    },
+    "icon-size": {
+      "type": "number",
+      "default": 1,
+      "function": true,
+      "transition": true,
+      "doc": "图标比例尺.1是原始尺寸,3倍大小。",
+      "requires": [
+        "icon-image"
+      ]
+    },
+    "icon-color": {
+      "type": "color",
+      "default": "#000000",
+      "function": true,
+      "transition": true,
+      "doc": "图标的颜色.这只能用于sdf图标.",
+      "requires": [
+        "icon-image"
+      ]
+    },
+    "icon-halo-color": {
+      "type": "color",
+      "default": "rgba(0, 0, 0, 0)",
+      "function": true,
+      "transition": true,
+      "doc": "图标的光晕的颜色.图标光晕只能与sdf图标一起使用.",
+      "requires": [
+        "icon-image"
+      ]
+    },
+    "icon-halo-width": {
+      "type": "number",
+      "default": 0,
+      "minimum": 0,
+      "function": true,
+      "transition": true,
+      "units": "pixels",
+      "doc": "光环到图标轮廓的距离.",
+      "requires": [
+        "icon-image"
+      ]
+    },
+    "icon-halo-blur": {
+      "type": "number",
+      "default": 0,
+      "minimum": 0,
+      "function": true,
+      "transition": true,
+      "units": "pixels",
+      "doc": "将光晕淡出外面.",
+      "requires": [
+        "icon-image"
+      ]
+    },
+    "icon-translate": {
+      "type": "array",
+      "value": "number",
+      "length": 2,
+      "default": [
+        0,
+        0
+      ],
+      "function": true,
+      "transition": true,
+      "units": "pixels",
+      "doc": "图标的偏移距离.值为[x，y],其中负值分别表示左侧和上侧.",
+      "requires": [
+        "icon-image"
+      ]
+    },
+    "icon-translate-anchor": {
+      "type": "enum",
+      "values": [
+        "map",
+        "viewport"
+      ],
+      "doc": "Control whether the translation is relative to the map (north) or viewport (screen)",
+      "default": "map",
+      "requires": [
+        "icon-image",
+        "icon-translate"
+      ]
+    },
+    "text-opacity": {
+      "type": "number",
+      "doc": "绘制文本的透明度.",
+      "default": 1,
+      "minimum": 0,
+      "maximum": 1,
+      "function": true,
+      "transition": true,
+      "requires": [
+        "text-field"
+      ]
+    },
+    "text-size": {
+      "type": "number",
+      "default": 16,
+      "minimum": 0,
+      "function": true,
+      "transition": true,
+      "units": "pixels",
+      "doc": "字体大小.如果未指定,则文本将与图层定义的一样大。",
+      "requires": [
+        "text-field"
+      ]
+    },
+    "text-color": {
+      "type": "color",
+      "doc": "绘制文本的颜色.",
+      "default": "#000000",
+      "function": true,
+      "transition": true,
+      "requires": [
+        "text-field"
+      ]
+    },
+    "text-halo-color": {
+      "type": "color",
+      "default": "rgba(0, 0, 0, 0)",
+      "function": true,
+      "transition": true,
+      "doc": "文字的光晕的颜色,有助于它从背景中清晰显示.",
+      "requires": [
+        "text-field"
+      ]
+    },
+    "text-halo-width": {
+      "type": "number",
+      "default": 0,
+      "minimum": 0,
+      "function": true,
+      "transition": true,
+      "units": "pixels",
+      "doc": "光环与字体轮廓的距离.最大文本光晕宽度是字体大小的1/4.",
+      "requires": [
+        "text-field"
+      ]
+    },
+    "text-halo-blur": {
+      "type": "number",
+      "default": 0,
+      "minimum": 0,
+      "function": true,
+      "transition": true,
+      "units": "pixels",
+      "doc": "光环外面的淡出距离.",
+      "requires": [
+        "text-field"
+      ]
+    },
+    "text-translate": {
+      "type": "array",
+      "value": "number",
+      "length": 2,
+      "default": [
+        0,
+        0
+      ],
+      "function": true,
+      "transition": true,
+      "units": "pixels",
+      "doc": "标签偏移。 值为[x，y]，其中负值分别表示左侧和上侧。",
+      "requires": [
+        "text-field"
+      ]
+    },
+    "text-translate-anchor": {
+      "type": "enum",
+      "values": [
+        "map",
+        "viewport"
+      ],
+      "doc": "Control whether the translation is relative to the map (north) or viewport (screen)",
+      "default": "map",
+      "requires": [
+        "text-field",
+        "text-translate"
+      ]
+    }
+  },
+  "paint_raster": {
+    "raster-opacity": {
+      "type": "number",
+      "doc": "绘制图像的透明度.",
+      "default": 1,
+      "minimum": 0,
+      "maximum": 1,
+      "transition": true
+    },
+    "raster-hue-rotate": {
+      "type": "number",
+      "default": 0,
+      "period": 360,
+      "function": true,
+      "transition": true,
+      "units": "degrees",
+      "doc": "旋转颜色轮盘周围的色调."
+    },
+    "raster-brightness": {
+      "type": "array",
+      "value": "number",
+      "doc": "增加或减少图像的亮度.第一个值是最小值,第二个值是最大亮度.",
+      "length": 2,
+      "default": [
+        0,
+        1
+      ],
+      "function": true,
+      "transition": true
+    },
+    "raster-saturation": {
+      "type": "number",
+      "doc": "增加或减少图片的饱和度.",
+      "default": 0,
+      "minimum": -1,
+      "maximum": 1,
+      "function": true,
+      "transition": true
+    },
+    "raster-contrast": {
+      "type": "number",
+      "doc": "增加或减少图片的对比度.",
+      "default": 0,
+      "minimum": -1,
+      "maximum": 1,
+      "function": true,
+      "transition": true
+    },
+    "raster-fade-duration": {
+      "type": "number",
+      "default": 300,
+      "minimum": 0,
+      "function": true,
+      "transition": true,
+      "units": "milliseconds",
+      "doc": "添加新图块时的渐变持续时间."
+    }
+  },
+  "paint_background": {
+    "background-color": {
+      "type": "color",
+      "default": "#000000",
+      "doc": "绘制背景的颜色.",
+      "function": true,
+      "transition": true,
+      "requires": [
+        {
+          "!": "background-image"
+        }
+      ]
+    },
+    "background-image": {
+      "type": "string",
+      "doc": "自定义背景图片"
+    },
+    "background-opacity": {
+      "type": "number",
+      "default": 1,
+      "minimum": 0,
+      "maximum": 1,
+      "doc": "背景的透明度",
+      "function": true,
+      "transition": true
+    }
+  },
+  "transition": {
+    "duration": {
+      "type": "number",
+      "default": 300,
+      "minimum": 0,
+      "units": "milliseconds",
+      "doc": "指定完整过渡的时间."
+    },
+    "delay": {
+      "type": "number",
+      "default": 0,
+      "minimum": 0,
+      "units": "milliseconds",
+      "doc": "转换开始之前的时间."
+    }
+  }
+}

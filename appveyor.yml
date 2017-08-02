@@ -1,0 +1,14 @@
+environment:
+  matrix:
+    - nodejs_version: "4.6"
+    - nodejs_version: "5.11"
+    - nodejs_version: "6.1"
+install:
+  - ps: Install-Product node $env:nodejs_version
+  - md public
+  - npm install
+build_script:
+  - npm run build
+test_script:
+  - npm run lint
+  - npm test

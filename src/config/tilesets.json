@@ -1,0 +1,22 @@
+{
+  "smartmapX1": {
+    "type": "vector",
+    "url": "http://114.247.222.102:33012/index2.json",
+    "title": "样式1"
+  },
+  "smartmapX2": {
+    "type": "vector",
+    "url": "http://114.247.222.102:33012/index2.json",
+    "title": "样式2"
+  },
+  "smartmapX3": {
+    "type": "vector",
+    "url": "http://114.247.222.102:33012/index2.json",
+    "title": "样式3"
+  },
+  "smartmapX4": {
+    "type": "vector",
+    "url": "http://114.247.222.102:33012/index2.json",
+    "title": "样式4"
+  }
+}

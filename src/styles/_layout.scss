@@ -1,0 +1,101 @@
+//SCROLLING
+.maputnik-scroll-container {
+  overflow-x: visible;
+  overflow-y: scroll;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+  position: absolute;
+}
+
+//APP LAYOUT
+.maputnik-layout {
+  font-family: $font-family;
+  color: $color-white-title;
+
+  //左面板
+  &-list {
+    position: fixed;
+    bottom: 0;
+    height: 100%;
+    top: 30px;
+    left: 0;
+    z-index: 2;
+    width: $layout-list-width;
+    overflow: hidden;
+    background-color: $color-white-title;
+
+    border-color: $color-title-bg;
+    border-style: solid;
+    border-width: 0 0 0 1px;
+  }
+
+  //右面板
+  &-drawer {
+    //display: none;
+    position: fixed;
+    bottom: 0;
+    height: 100%;
+    //top: $toolbar-height;
+    left: $layout-list-width;
+    transition: all 0.5s ease;
+    z-index: 1;
+    width: $layout-list-draw;
+    background-color: $color-white-title;
+
+    &-close{
+      position: absolute;
+      right: -27px;
+      color: $color-white-title;
+      cursor: pointer;
+      background: rgba(0,0,0,0.4);
+      border: 0;
+      font-size: 25px;
+    }
+  }
+  //右面板关闭
+  &-drawer1 {
+    //display: none;
+    position: fixed;
+    bottom: 0;
+    height: 100%;
+    transition: all 0.5s ease;
+    left: $layout-list-width;
+    z-index: 1;
+    width: 0px;
+    background-color: $color-white-title;
+
+    &-close{
+      display: none;
+    }
+  }
+
+  &-bottom {
+    position: fixed;
+    height: 50px;
+    bottom: 0;
+    left: 550px;
+    z-index: 1;
+    width: 100%;
+    background-color: $color-white-title;
+  }
+
+}
+.maputnik-chart{
+  &-ul{
+    position: fixed;
+    left: 200px;
+    z-index: 1;
+    bottom: 5px;
+  }
+  &-li{
+    width: 300px;
+    height: 180px;
+    background-color: rgba(0,0,0,0.4);
+    float:left;
+    list-style: none;
+    margin-left: 1px;
+    border-radius: 3px;
+  }
+}
